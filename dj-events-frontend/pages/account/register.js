@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout";
 import styles from "@/styles/AuthForm.module.css";
 import Link from "next/link";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { FaUser } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import AuthContext from "context/AuthContext";
@@ -14,6 +14,8 @@ export default function RegisterPage() {
 
   const { register, error } = useContext(AuthContext);
 
+  useEffect(() => error && toast.error(error));
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -22,7 +24,7 @@ export default function RegisterPage() {
       return;
     }
 
-    register({ username, email, password, passwordConfirm });
+    register({ username, email, password });
   };
 
   return (
