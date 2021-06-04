@@ -5,8 +5,9 @@ import Link from "next/link";
 import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
 import styles from "@/styles/Form.module.css";
+import { parseCookies } from "@/helpers/index";
 
-const AddEventPage = () => {
+const AddEventPage = ({ token }) => {
   const [values, setValues] = useState({
     name: "",
     performers: "",
@@ -29,15 +30,19 @@ const AddEventPage = () => {
 
     if (hasEmptyFields) {
       toast.error("Please fill in all fields");
+      return;
     }
 
     const res = await fetch(`${API_URL}/events`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
     });
+
+    console.log(res);
 
     if (!res.ok) {
       toast.error("Something Went Wrong");
@@ -139,3 +144,12 @@ const AddEventPage = () => {
 };
 
 export default AddEventPage;
+
+export async function getServerSideProps({ req }) {
+  const { token } = parseCookies(req);
+
+  console.log(token);
+  return {
+    props: { token },
+  };
+}
